@@ -1,0 +1,161 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\title{\textbf{GWAS Liftover Tool}\\
+\large Convert SNP Coordinates Between GRCh37 and GRCh38}
+\author{Ahmad Jawdat}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Overview}
+This repository provides simple and reliable Python tools to convert genome coordinates between \textbf{GRCh37 (hg19)} and \textbf{GRCh38 (hg38)} using:
+\begin{itemize}
+    \item UCSC chain files
+    \item The \texttt{pyliftover} Python package
+\end{itemize}
+
+It supports:
+\begin{itemize}
+    \item GWAS summary statistics
+    \item Any TSV or CSV file with chromosome and position columns
+    \item Bidirectional conversion: \textbf{37 → 38} or \textbf{38 → 37}
+\end{itemize}
+
+All original columns remain unchanged. New columns (e.g., \texttt{Chr\_37}, \texttt{bp\_37}) are appended.
+
+\section*{Features}
+\begin{itemize}
+    \item Convert SNP coordinates between builds with one configuration change
+    \item Uses UCSC chain files for accuracy
+    \item Supports TSV and CSV
+    \item Automatically detects file format
+    \item Keeps all original GWAS columns
+    \item Adds new coordinate columns + conversion status
+    \item Includes a standalone demo script
+\end{itemize}
+
+\section*{Repository Structure}
+\begin{verbatim}
+liftover/
+│
+├── chains/
+│     ├── hg19ToHg38.over.chain.gz
+│     └── hg38ToHg19.over.chain.gz
+│
+├── demo/
+│     └── liftover_demo.py
+│
+├── scripts/
+│     └── liftover_gwas.py
+│
+└── README.tex
+\end{verbatim}
+
+\section*{Installation}
+
+\subsection*{1. Install Python packages}
+\begin{verbatim}
+pip install pyliftover pandas
+\end{verbatim}
+
+\subsection*{2. Clone the repository}
+\begin{verbatim}
+git clone https://github.com/<your_username>/<repo_name>.git
+cd <repo_name>
+\end{verbatim}
+
+
+\section*{Downloading UCSC Chain Files}
+
+This tool requires UCSC liftover chain files.  
+They can be downloaded directly from the UCSC Genome Browser database:
+
+\subsection*{GRCh37 (hg19) → GRCh38 (hg38)}
+\begin{verbatim}
+https://hgdownload.soe.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz
+\end{verbatim}
+
+\subsection*{GRCh38 (hg38) → GRCh37 (hg19)}
+\begin{verbatim}
+https://hgdownload.soe.ucsc.edu/goldenPath/hg38/liftOver/hg38ToHg19.over.chain.gz
+\end{verbatim}
+
+Place these files into the repository's \texttt{chains/} folder:
+
+\begin{verbatim}
+liftover/chains/
+    hg19ToHg38.over.chain.gz
+    hg38ToHg19.over.chain.gz
+\end{verbatim}
+
+
+\section*{Usage}
+
+\subsection*{Run the GWAS liftover script}
+\begin{verbatim}
+python scripts/liftover_gwas.py
+\end{verbatim}
+
+\subsection*{Configuration}
+Configure the script by editing the first lines:
+
+\begin{lstlisting}[language=Python]
+INPUT = "GWAS/GWAS_Example.tsv"
+OUTPUT = "GWAS/GWAS_Example_Lifted.tsv"
+
+CHR_COL = "Chr"
+BP_COL  = "bp_38"
+
+TARGET_BUILD = 37   # Convert to GRCh37 (use 38 to convert to GRCh38)
+\end{lstlisting}
+
+
+\section*{Output Columns}
+
+The script appends:
+
+\begin{itemize}
+    \item \texttt{Chr\_37}, \texttt{bp\_37} (when converting to GRCh37)
+    \item \texttt{Chr\_38}, \texttt{bp\_38} (when converting to GRCh38)
+    \item \texttt{LO\_STATUS}
+\end{itemize}
+
+Status can be:
+\begin{itemize}
+    \item \texttt{OK} – Successfully mapped
+    \item \texttt{UNMAPPED} – No valid mapping in chain file
+    \item \texttt{BAD\_INPUT} – Missing or invalid chr/pos values
+    \item \texttt{BAD\_PARSE} – Could not parse as integer
+\end{itemize}
+
+
+\section*{Demo Script}
+
+A minimal demo is included:
+
+\begin{verbatim}
+python demo/liftover_demo.py
+\end{verbatim}
+
+This shows how a single coordinate is converted.
+
+\section*{License}
+This project is open-source and free to use.
+
+\section*{Author}
+\textbf{Ahmad Jawdat} \\
+\href{mailto:ahmad.jawdat@example.com}{ahmad.jawdat@example.com}
+
+\end{document}
