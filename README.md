@@ -22,10 +22,12 @@ New coordinate columns such as Chr_37, bp_37 (or Chr_38, bp_38) are appended.
 
 liftover/
 │
+
 ├── chains/
 │     ├── hg19ToHg38.over.chain.gz
 │     └── hg38ToHg19.over.chain.gz
 │
+
 ├── scripts/
 │     └── liftover_gwas.py
 │
